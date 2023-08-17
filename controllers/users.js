@@ -1,14 +1,15 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const BadRequestError = require('../erorrs/BadRequestError');
-const NotFoundError = require('../erorrs/NotFoundError');
-const ConflictError = require('../erorrs/ConflictError');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
+const { ERROR_MESSAGE } = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUserById = (req, res, next) => {
-  userModel
+  User
     .findById(req.user._id)
     .orFail(() => next(new NotFoundError(ERROR_MESSAGE.USER_NOT_FOUND)))
     .then((user) => res.send(user))
@@ -51,7 +52,7 @@ const createUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, email } = req.body;
- User
+  User
     .findByIdAndUpdate(
       userId,
       { name, email },

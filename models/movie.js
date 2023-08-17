@@ -59,8 +59,8 @@ const movieSchema = new mongoose.Schema(
     nameEN: {
       type: String,
       required: true,
-    }
-  }
+    },
+  },
 );
 
 const Movie = mongoose.model('movie', movieSchema);

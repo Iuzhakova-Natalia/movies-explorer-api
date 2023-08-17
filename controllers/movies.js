@@ -42,16 +42,12 @@ const createMovie = (req, res, next) => {
       nameEN,
       owner,
     })
-    .then((movie) =>
-      movie.then((movie) => res.status(201).send(movie)),
-    )
+    .then((movie) => res.status(201).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError(ERROR_MESSAGE.WRONG_DATA_MOVIE));
       }
-      else {
-        next(err);
-      }
+      return next(err);
     });
 };
 
@@ -77,9 +73,8 @@ const deleteMovie = (req, res, next) => {
           new BadRequestError(ERROR_MESSAGE.WRONG_DATA_MOVIE_DELETE),
         );
       }
-      else {
-        next(err);
-      }
+
+      return next(err);
     });
 };
 
