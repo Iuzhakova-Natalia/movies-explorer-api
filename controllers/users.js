@@ -8,6 +8,7 @@ const { ERROR_MESSAGE } = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
+/* GET /users/me - get current user data by Id */
 const getUserById = (req, res, next) => {
   User
     .findById(req.user._id)
@@ -79,14 +80,23 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
+
         NODE_ENV === 'production' ? JWT_SECRET : 'super-strong-secret',
         {
           expiresIn: '7d',
         },
       );
-      res.send({ token });
+      return res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      }).send({ jwt: token });
     })
     .catch(next);
+};
+
+const signout = (_, res) => {
+  res.clearCookie('jwt').send({ message: 'Выход' });
 };
 
 module.exports = {
@@ -94,4 +104,5 @@ module.exports = {
   createUser,
   updateUser,
   login,
+  signout,
 };
